@@ -26,11 +26,21 @@ if (!in_array($fileExt, $allowedFiles)) {
     $conn->close();
 }
 
+
+// change to 'duplicate, return that, else upload the file 
 if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $savedFile)) {
     //if we can upload the file without any error, then upload and notify the user.
     //we use $_SERVER['SERVER_ADDR'] to make the software more portable.
+    //This should come after the insertion of the file. It will be moved after there's a check to ensure that the server does not shit itself
     echo "<p>file available <a href=" . $_SERVER['SERVER_ADDR'] ."/" . $savedFile . ">here</a></p>\n";
     $imgHash = md5_file($savedFile);
+    echo "\n\n";
+    //if null, don't return. else return orig link
+    echo "<p>" . gettype(isDuplicate($imgHash, $conn)) . "</p>";
+    foreach (isDuplicate($imgHash, $conn) as $value) {
+        echo $value . "\n";
+    }
+    echo "\n\n";
     insertFile($conn, $fileName, $newFileName, $fileExt, $imgHash);
     $conn->close();
 
@@ -67,6 +77,19 @@ function insertFile($conn, $origFileName, $newName, $ext, $hash) {
     $insertStatement->bind_param("sssss", $hash, $origFileName, $newName, $ext, $curDate);
     $insertStatement->execute();
     echo "\n\nDatabase successfully updated";
+}
+
+function isDuplicate($fileHash, $conn) {
+    //$selectedRows = "";
+    $selectStatement = $conn->prepare("SELECT * FROM IMAGES WHERE img_hash=?");
+    $selectStatement->bind_param("s",$fileHash);
+    $selectStatement->execute();
+    //$selectStatement->bind_result($selectedRows);
+    $selectedRows = $selectStatement->get_result();
+    $selectStatement->fetch();
+    $selectStatement->close();
+    $myrow = $selectedRows->fetch_assoc();
+    return $myrow;
 }
 
 ?>
