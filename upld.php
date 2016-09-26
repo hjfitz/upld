@@ -1,6 +1,13 @@
 <?php
+//todo: 
+//Create config file
+//check for matching images and return the actual image
 
-// define the folder for the file to be saved to, and the name that it should be given
+// Initialises the filename for our image.
+// Final Variables:
+// - $savedFile, made from $fileDir and $newFileName (generated)
+// - $fileExt, extension of file - used to for validation and database storage (required?)
+// -
 $fileDir = "f/";
 $fileName = basename($_FILES["fileUpload"]["name"]);
 $fileExt = $_FILES['fileUpload']['type'];
