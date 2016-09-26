@@ -15,18 +15,26 @@ $fileExt = explode("/", $fileExt)[1];
 $newFileName = generate_name($fileName) . "." . $fileExt;
 $savedFile = $fileDir . $newFileName;
 
+$allowedFiles = array("jpg","jpeg","gif","png");
+
+
 $conn = dbConn();
+
+//validate file, ensure that it is an image (using cURL returns octet-type oh no)
+if (!in_array($fileExt, $allowedFiles)) {
+    die("Error with uploaded file");
+    $conn->close();
+}
 
 if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $savedFile)) {
     //if we can upload the file without any error, then upload and notify the user.
     //we use $_SERVER['SERVER_ADDR'] to make the software more portable.
-    echo "file available at " . $_SERVER['SERVER_ADDR'] ."/" . $savedFile;
+    echo "<p>file available <a href=" . $_SERVER['SERVER_ADDR'] ."/" . $savedFile . ">here</a></p>\n";
     $imgHash = md5_file($savedFile);
     insertFile($conn, $fileName, $newFileName, $fileExt, $imgHash);
     $conn->close();
 
 }
-
 
 function generate_name($fileName) {
     $arrName = str_split($fileName);
@@ -60,4 +68,5 @@ function insertFile($conn, $origFileName, $newName, $ext, $hash) {
     $insertStatement->execute();
     echo "\n\nDatabase successfully updated";
 }
+
 ?>
