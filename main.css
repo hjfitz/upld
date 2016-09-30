@@ -1,4 +1,3 @@
-
 body {
     display: flex;
     align-items: center;
@@ -8,3 +7,5 @@ body {
 main {
     max-width:50vw;
 }
+
+form>

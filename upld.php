@@ -36,11 +36,15 @@ if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $savedFile)) {
     $imgHash = md5_file($savedFile);
     echo "\n\n";
     //if null, don't return. else return orig link
-    echo "<p>" . gettype(isDuplicate($imgHash, $conn)) . "</p>";
-    foreach (isDuplicate($imgHash, $conn) as $value) {
-        echo $value . "\n";
+    //echo "<p>" . gettype(isDuplicate($imgHash, $conn)) . "</p>";
+    //foreach (isDuplicate($imgHash, $conn) as $value) {
+    //    echo $value . "\n";
+    //}
+    //echo "\n\n";
+    //todo: fetch existing file and return the address to the user.
+    if (! is_null(isDuplicate($imgHash, $conn))) {
+	    echo "<p>File exists!</p>";
     }
-    echo "\n\n";
     insertFile($conn, $fileName, $newFileName, $fileExt, $imgHash);
     $conn->close();
 
