@@ -3,3 +3,4 @@ b.png
 clean.sh
 *.swp
 node_modules/
+npm-debug.log

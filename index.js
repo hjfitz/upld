@@ -53,21 +53,25 @@ function checkExists(req,res) {
   //query the database for the hash
   var hash = md5(fs.readFileSync(req.file.path));
   console.log("file hash before upload: "+hash);
-  db.get('SELECT file_location FROM file where file_hash = $hash', {
-    $hash: '"' + hash + '"'
-  },
-  function(err,row) {
+  var query = 'SELECT file_location FROM file WHERE file_hash = "' + hash + '";';
+  db.get(query, {}, function(err,row) {
     if (err) console.error("Error running select command: " + err);
-    console.log("select cmd returns: "+row);
+    //console.log("select cmd returns: "+row);
+    if (row == null) {
+      uploadFile(req,res, hash);
+    } else {
+      res.redirect(200, row.file_location);
+      //console.log(row.file_location);
+    }
   });
   //if it doesn't exist, upload it
-  uploadFile(req,res, hash);
+
   //if it exists, return the url
   //getFile();
-  res.redirect("/");
+  //res.redirect("/");
 }
 
-function uploadFile(req,res, hash) {
+function uploadFile(req,res,hash) {
   var filename = req.file.originalname;
   var ext = filename.split(".");
   ext = ext[ext.length - 1]; //can't have anything on my gh without spaghetti code
@@ -75,17 +79,19 @@ function uploadFile(req,res, hash) {
   var newName = genName(filename) + "." + ext;
   //move the file
   var newArea = upload_dir + newName
+  console.log(newArea);
   fs.rename(req.file.path, newArea, function(err) {
     if (err) {
       console.error("error moving file: " + err);
     } else {
       //input to Database
       console.log("success inserting "+newArea);
-      db.run("INSERT INTO file VALUES ( $name, $location, $hash)", {
+      db.run("INSERT INTO file VALUES ($name, $location, $hash)", {
         $name: newName,
-        $location: upload_dir + newName,
+        $location: "/f/" + newName,
         $hash: md5(fs.readFileSync(newArea))
-      })
+      });
+      res.redirect(200, ("/f/"+newName));
     }
   });
 }

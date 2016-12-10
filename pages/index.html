@@ -3,12 +3,35 @@
   <meta charset="utf-8">
   <title>upld</title>
   <script src=main.js></script>
+  <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css"  media="screen,projection"/>
+   <!--Let browser know website is optimized for mobile-->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   <link rel=stylesheet href=main.css>
 </head>
 <body>
-  <header><h1>upld</h1></header>
-  <p>it works</p>
-  <form action="/api/upld" method="post" enctype="multipart/form-data">
-    <p><input name="upldfile" type="file"></p>
-    <p><input name="submit" type="submit" value="upld"></p>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo center">Upld.</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="https://hjf.io">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class=container>
+    <div class="col s7 m4 l3">
+      <div class="row">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Upld. Select a file to upload!</span>
+            <form action="/api/upld" method="post" enctype="multipart/form-data">
+              <p><input name="upldfile" type="file"></p>
+              <p><input name="submit" type="submit" value="upld"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
